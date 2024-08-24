@@ -26,8 +26,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please add a Password']
   }
-});
-
+}, { timestamps: true });
 
 const facultySchema = new mongoose.Schema({
   firstName: {
@@ -40,11 +39,12 @@ const facultySchema = new mongoose.Schema({
   },
   roleNumber: {
     type: String,
-    required: [true, 'Please add a facultyid Number']
+    required: [true, 'Please add a Faculty ID Number']
   },
   domain: {
     type: String,
-    required: [true, 'Please add a Domain']
+    required: true,
+    enum: ['language', 'project', 'achievement', 'communication language', 'certificate'],
   },
   email: {
     type: String,
@@ -55,7 +55,7 @@ const facultySchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please add a Password']
   }
-});
+}, { timestamps: true });
 
 const adminSchema = new mongoose.Schema({
   firstName: {
@@ -71,8 +71,9 @@ const adminSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please add a Password']
   }
-});
+}, { timestamps: true });
 
+// Define the schema for Parent
 const parentSchema = new mongoose.Schema({
   firstName: {
     type: String,
@@ -91,7 +92,7 @@ const parentSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please add a Password']
   }
-});
+}, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
 const Faculty = mongoose.model('Faculty', facultySchema);

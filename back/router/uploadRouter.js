@@ -1,19 +1,24 @@
 const express = require('express');
-const Router = express.Router();
-const {
-    uploadachivement,
-    uploadcertificate,
-    uploadclanguage,
-    uploadlanguage,
-    uploadproject,
-    uploadps
+const router = express.Router();
+const { 
+    uploadachivement, 
+    uploadcertificate, 
+    uploadclanguage, 
+    uploadlanguage, 
+    uploadproject, 
+    uploadps,
+    list,
+    getFacultyDomainData
 } = require('../controller/uploadcontroller');
+const authMiddleware = require('../middleware/authMiddleware'); // Import the middleware
 
-Router.post('/achivement', uploadachivement);
-Router.post('/certificate', uploadcertificate);
-Router.post('/clanguage', uploadclanguage);
-Router.post('/language', uploadlanguage);
-Router.post('/project', uploadproject);
-Router.post('/ps', uploadps);
+router.post('/project', authMiddleware, uploadproject);
+router.post('/language', authMiddleware, uploadlanguage);
+router.post('/ps', authMiddleware, uploadps);
+router.post('/certificate', authMiddleware, uploadcertificate);
+router.post('/clanguage', authMiddleware, uploadclanguage);
+router.post('/achivement', authMiddleware, uploadachivement);
+router.get('/list', authMiddleware, list)
+router.get('/domain-data', authMiddleware, getFacultyDomainData);
 
-module.exports = Router;
+module.exports = router;
