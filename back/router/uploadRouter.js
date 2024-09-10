@@ -8,7 +8,10 @@ const {
     uploadproject, 
     uploadps,
     list,
-    getFacultyDomainData
+    getFacultyDomainData,
+    updateVerificationStatus,
+    Rank
+
 } = require('../controller/uploadcontroller');
 const authMiddleware = require('../middleware/authMiddleware'); // Import the middleware
 
@@ -20,5 +23,8 @@ router.post('/clanguage', authMiddleware, uploadclanguage);
 router.post('/achivement', authMiddleware, uploadachivement);
 router.get('/list', authMiddleware, list)
 router.get('/domain-data', authMiddleware, getFacultyDomainData);
+router.patch('/update-verification/:id', authMiddleware, updateVerificationStatus);
+router.get('/rank', Rank)
+
 
 module.exports = router;

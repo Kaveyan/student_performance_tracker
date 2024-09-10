@@ -6,13 +6,12 @@ const authMiddleware = async (req, res, next) => {
 
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {
-            // Extract the token from the Authorization header
+           
             token = req.headers.authorization.split(' ')[1];
 
-            // Verify the token
+ 
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-            // Determine the user type based on the role and find the user
             let user;
             if (decoded.role === 'student') {
                 user = await User.findById(decoded.id).select('-password');
@@ -30,9 +29,8 @@ const authMiddleware = async (req, res, next) => {
                 return res.status(401).json({ message: 'User not found' });
             }
 
-            // Attach user to request object
             req.user = user;
-            req.userId = decoded.id; // Set req.userId for route handlers
+            req.userId = decoded.id; 
 
             next();
 

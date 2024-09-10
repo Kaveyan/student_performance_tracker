@@ -1,6 +1,6 @@
 const { project, language, ps, certificate, clanguage, achivement } = require('../model/upload');
 const authMiddleware = require('../middleware/authMiddleware');
-const { Faculty } = require('../model/userModel');
+const { User,Faculty } = require('../model/userModel');
 // Ensure authconst { Faculty } = require('../model/userModel');Middleware is applied to these routes to set req.userId
 
 const uploadproject = async (req, res) => {
@@ -74,19 +74,31 @@ const uploadachivement = async (req, res) => {
     }
   };
 
-const list = async (req, res) => {
+  const list = async (req, res) => {
     const userId = req.userId; // From auth middleware
 
     try {
+        // Fetch the counts for each category
         const [projectCount, languageCount, psCount, certificateCount, clanguageCount, achivementCount] = await Promise.all([
-            project.countDocuments({ userId }),
-            language.countDocuments({ userId }),
-            ps.countDocuments({ userId }),
-            certificate.countDocuments({ userId }),
-            clanguage.countDocuments({ userId }),
-            achivement.countDocuments({ userId })
+            project.countDocuments({ userId, verify: true }),
+            language.countDocuments({ userId, verify: true }),
+            ps.countDocuments({ userId, verify: true }),
+            certificate.countDocuments({ userId, verify: true }),
+            clanguage.countDocuments({ userId, verify: true }),
+            achivement.countDocuments({ userId, verify: true })
         ]);
 
+        // Update the user's points
+        await User.findByIdAndUpdate(userId, {
+            'points.project': projectCount,
+            'points.language': languageCount,
+            'points.communication': clanguageCount,
+            'points.certificate': certificateCount,
+            'points.achievement': achivementCount,
+            'points.total': projectCount + languageCount + clanguageCount + certificateCount + achivementCount // Update total
+        });
+
+        // Send the response with updated stats
         res.json({
             projects: projectCount,
             languages: languageCount,
@@ -100,6 +112,7 @@ const list = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+
 const getFacultyDomainData = async (req, res) => {
   try {
     const faculty = await Faculty.findById(req.userId).select('domain');
@@ -110,19 +123,19 @@ const getFacultyDomainData = async (req, res) => {
     let data;
     switch (faculty.domain) {
       case 'language':
-        data = await language.find().populate('userId', 'firstName roleNumber'); // Fetch language data with user info
+        data = await language.find({ verify: false }).populate('userId', 'firstName roleNumber');
         break;
       case 'project':
-        data = await project.find().populate('userId', 'firstName roleNumber'); // Fetch project data with user info
+        data = await project.find({ verify: false }).populate('userId', 'firstName roleNumber');
         break;
       case 'achievement':
-        data = await achivement.find().populate('userId', 'firstName roleNumber'); // Fetch achievement data with user info
+        data = await achivement.find({ verify: false }).populate('userId', 'firstName roleNumber');
         break;
       case 'communication language':
-        data = await clanguage.find().populate('userId', 'firstName roleNumber'); // Fetch communication language data with user info
+        data = await clanguage.find({ verify: false }).populate('userId', 'firstName roleNumber');
         break;
       case 'certificate':
-        data = await certificate.find().populate('userId', 'firstName roleNumber'); // Fetch certificate data with user info
+        data = await certificate.find({ verify: false }).populate('userId', 'firstName roleNumber');
         break;
       default:
         return res.status(400).json({ message: 'Invalid domain' });
@@ -134,7 +147,65 @@ const getFacultyDomainData = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+// In your backend (uploadcontroller.js or relevant controller file)
+
+const updateVerificationStatus = async (req, res) => {
+  console.log('req.user:', req.user); // Add this line to debug
+
+  if (!req.user || !req.user.domain) {
+    return res.status(400).json({ message: 'Invalid user domain' });
+  }
+
+  const { id } = req.params;
+  const { verify } = req.body;
+
+  try {
+    const model = determineModel(req.user.domain);
+    const updatedData = await model.findByIdAndUpdate(id, { verify }, { new: true });
+
+    if (!updatedData) {
+      return res.status(404).json({ message: 'Data not found' });
+    }
+
+    res.json({ message: 'Verification status updated successfully', data: updatedData });
+  } catch (error) {
+    console.error('Error updating verification status:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// A helper function to determine the correct model based on the domain
+function determineModel(domain) {
+  switch (domain) {
+    case 'language':
+      return language;
+    case 'project':
+      return project;
+    case 'achievement':
+      return achivement;
+    case 'communication language':
+      return clanguage;
+    case 'certificate':
+      return certificate;
+    default:
+      throw new Error('Invalid domain');
+  }
+}
+
+const Rank=async (req, res) => {
+  const sortBy = req.query.sortBy || 'total'; // Default to total points if not specified
+
+  try {
+    // Find all users and sort by the specified category (achievement, certificate, etc.)
+    const users = await User.find().sort({ [`points.${sortBy}`]: -1 });
+    res.status(200).json(users);
+  } catch (err) {
+    console.error('Error fetching users:', err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+}
 
 
-module.exports = { uploadachivement, uploadcertificate, uploadclanguage, uploadlanguage, uploadproject, uploadps, list,getFacultyDomainData };
+
+module.exports = { uploadachivement, uploadcertificate, uploadclanguage, uploadlanguage, uploadproject, uploadps, list,getFacultyDomainData,updateVerificationStatus,Rank };
 
