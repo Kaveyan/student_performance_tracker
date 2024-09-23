@@ -17,6 +17,7 @@ import FacultyHome from "./components/Facultyhome";
 import StudentHome from "./components/Studenhome";
 import ProtectedRoute from './components/ProtectedRoute';
 import Event from "./components/Event";
+import Detail from "./components/Detail";
 
 function App() {
   return (
@@ -30,7 +31,6 @@ function App() {
           <Route path="/student" element={<Studentcreate />} />
           <Route path="/admin" element={<Admincreate />} />
           <Route path="/event" element={<Event />} />
-          {/* Define protected routes */}
           <Route 
             path="/adminhome" 
             element={
@@ -56,7 +56,7 @@ function App() {
             } 
           />
           
-          {/* Other routes */}
+        
           <Route 
             path="/upload" 
             element={
@@ -94,6 +94,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Uploadlanguage />
+              </ProtectedRoute>
+            } 
+          />
+           <Route 
+            path="/detail" 
+            element={
+              <ProtectedRoute>
+                <Detail />
               </ProtectedRoute>
             } 
           />

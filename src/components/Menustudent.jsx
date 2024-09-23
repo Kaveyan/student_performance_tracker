@@ -24,7 +24,7 @@ export default function Menustudent() {
       <div className='mai-menu'>
         <Link to="/studenthome"><p><FontAwesomeIcon icon={faBorderAll} />Dashboard</p></Link>
         <Link to="/upload"><p><FontAwesomeIcon icon={faUpload} />Upload</p></Link>
-        <p><FontAwesomeIcon icon={faCalendarDays} />Events</p>
+        <Link to="/detail"><p><FontAwesomeIcon icon={faCalendarDays} />Detail</p></Link>
         <p><FontAwesomeIcon icon={faMessage} />Message</p>
         <br/><br/><br/>
         <p onClick={handleLogout}><FontAwesomeIcon icon={faRightFromBracket} />Logout</p>

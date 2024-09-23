@@ -98,12 +98,16 @@ input{
     color: white;
     border-radius: 10px;
     margin-bottom: 12px;
+    padding-right: 25px;
    
    
 }
 .box-content{
     display: flex;
     padding: 2%;
+    display: flex;
+    justify-content: space-between; /* Distribute space evenly between elements */
+    align-items: center;
 }
 .dash-main-admin h2{
     margin-bottom: 20px;
@@ -112,9 +116,7 @@ input{
 .box-content svg{
   margin-right: 20px;
 }
-.box-content p{
-    margin-left: 20%;
-}
+
 .option{
     display: flex;
 
@@ -141,15 +143,33 @@ input{
    margin-top: 10px;
 }
 .work{
-    box-shadow: 0px 25px 80px rgba(0, 0, 0, 0.15);
-    width: 480px;
-    height: 300px;
-    margin-left: 2%;
     background-color:#10161f ;
-    color: white;
-    border-radius: 10px;
-    margin-top: 12px;
+    margin-top: 10px;
+  height: 300px;
+  width: 350px;
+  margin-left: 55px;
+  border-radius:  15px;
+  color: white;
+  margin-bottom: 10%;
+  align-items: center;
+  justify-content: center;
 }
+.work button{
+    margin-left: 50px;
+}
+
+.user-info{
+    margin-top: 40px;
+    margin-left: 100px;
+
+}
+.work svg{
+    color: white;
+    font-size: 600%;
+  margin-top: 20px;
+  margin-left:130px ;
+  
+  }
 .student{
    font-size: x-large;
    margin-left: 12px;
@@ -169,3 +189,29 @@ input{
     display: flex;
     justify-content: center;
 }
+.up {
+    padding: 10px;
+    margin: 5px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer; /* Makes the div look clickable */
+    transition: background-color 0.3s ease;
+  }
+  
+  .up:hover {
+    background-color:#86a0c7; /* Changes background color on hover */
+  }
+  
+  .up p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
